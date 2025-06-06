@@ -42,6 +42,40 @@ class Cell:
     v_alignment: VAlignment = None
 
 
+@dataclass(frozen=True)
+class Column:
+    width: float | WidthUnit
+    children: list
+    padding: Padding | list[Padding] | None = None
+    h_alignment: HAlignment = None
+    v_alignment: VAlignment = None
+
+    def build(self, col_unit=1.0):
+        data = []
+        for item in self.children:
+            if isinstance(item, Cell):
+                child = item.child
+                if isinstance(child, Row):
+                    built = child.build(col_unit)
+                elif isinstance(child, Column):
+                    built = child.build(col_unit)
+                else:
+                    built = child
+                data.append([built])
+            else:
+                data.append([item])
+
+        return Table(
+            data,
+            style=[
+                ('LEFTPADDING', (0, 0), (-1, -1), 0),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+                ('TOPPADDING', (0, 0), (-1, -1), 0),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
+            ]
+        )
+
+
 class Row:
     def __init__(self, height: float = None, padding: Padding | list[Padding] = None, h_alignment: HAlignment = None,
     v_alignment: VAlignment = None, children: list[Cell] = None):
@@ -49,7 +83,7 @@ class Row:
         self.padding: Padding | list[Padding] = padding
         self.h_alignment: HAlignment = h_alignment
         self.v_alignment: VAlignment = v_alignment
-        self.children: list[Cell | Row] = children
+        self.children: list= children
 
     @staticmethod
     def _is_cell_specific(index: int | None):
@@ -112,19 +146,24 @@ class Row:
         data = [[]]
         cell_widths = []
 
-        for cell in self.children:
-            child = cell.child
+        for content in self.children:
+            child = content.child
+
             if isinstance(child, Row):
                 built_child = child.build(col_unit=col_unit)
+
+            elif isinstance(child, Column):
+                built_child = child.build(col_unit=col_unit)
+
             else:
-                built_child = child
+                built_child = child  # Regular flowable like Paragraph, Spacer, etc.
 
             data[0].append(built_child)
 
-            if isinstance(cell.width, WidthUnit):
-                resolved_width = cell.width.multiplier * col_unit
+            if isinstance(content.width, WidthUnit):
+                resolved_width = content.width.multiplier * col_unit
             else:
-                resolved_width = cell.width
+                resolved_width = content.width
             cell_widths.append(resolved_width)
 
         table_style = self._get_default_style()
