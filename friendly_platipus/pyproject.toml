@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "layoutlib"
+name = "friendly_platypus"
 version = "0.1.0"
 description = "A small layout helper library for ReportLab"
 authors = [
