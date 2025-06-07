@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from reportlab.lib import colors
+from reportlab.lib.colors import Color
 from reportlab.lib.units import inch
 
 from enums import Side
@@ -32,3 +33,10 @@ class Cell:
   h_alignment: str = None
   v_alignment: str = None
   border: Border | list[Border] = None
+
+
+@dataclass(frozen=True)
+class Font:
+  name: str
+  size: int
+  color: str | Color

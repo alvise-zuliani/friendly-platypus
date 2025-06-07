@@ -1,6 +1,7 @@
 
 
 from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, BaseDocTemplate, PageTemplate, Frame, PageBreak
 
 from layout_builder import Row
@@ -17,6 +18,12 @@ class PdfBuilder:
   def noop(self, canvas, doc):
     pass
 
+  def build_header(self, canvas, doc):
+    self.header.build(canvas, doc, doc.pagesize[1] - doc.topMargin)
+
+  def build_footer(self, canvas, doc):
+    self.footer.build(canvas, doc, doc.bottomMargin)
+
   def build(self):
     doc = BaseDocTemplate(self.filename, pagesize=self.page_size)
     col_unit = doc.width / 12
@@ -25,8 +32,8 @@ class PdfBuilder:
     simple_page = PageTemplate(
       id='simple',
       frames=[simple_frame],
-      onPage=self.header,
-      onPageEnd=self.footer)
+      onPage=self.build_header,
+      onPageEnd=self.build_footer)
     doc.addPageTemplates(simple_page)
     sized_body = []
     for item in self.body:
