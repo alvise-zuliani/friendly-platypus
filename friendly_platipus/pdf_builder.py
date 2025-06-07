@@ -3,7 +3,7 @@
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, BaseDocTemplate, PageTemplate, Frame, PageBreak
 
-from row_builder import Row
+from layout_builder import Row
 
 
 class PdfBuilder:
