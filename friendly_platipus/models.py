@@ -17,9 +17,11 @@ class Padding:
     size: float
     side: Side
 
+
 @dataclass(frozen=True)
 class WidthUnit:
   multiplier: int
+
 
 @dataclass(frozen=True)
 class Cell:
@@ -29,3 +31,4 @@ class Cell:
   h_alignment: str = None
   v_alignment: str = None
   border: Border | list[Border] = None
+

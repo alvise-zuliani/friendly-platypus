@@ -1,7 +1,7 @@
 
 from . import types, enums, builder
 from .row import Row
-from .column import Column
+from .column_builder import Column
 from .builder import PdfBuilder
 from .types import Cell, WidthUnit, Padding, Border
 from .enums import Side, HAlignment, VAlignment

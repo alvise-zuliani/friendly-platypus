@@ -1,13 +1,48 @@
-import column
+from dataclasses import dataclass
+
 from enums import Side
 from models import Padding, Border, WidthUnit, Cell
 
 from reportlab.platypus import Table
 
 
+@dataclass(frozen=True)
+class Column:
+  children: list
+  width: float | WidthUnit = WidthUnit(12)
+  padding: Padding | list[Padding] | None = None
+  h_alignment: str = None
+  v_alignment: str = None
+
+  def build(self, col_unit=1.0):
+    data = []
+    for item in self.children:
+      if isinstance(item, Cell):
+        child = item.child
+        if isinstance(child, Row):
+          built = child.build(col_unit)
+        elif isinstance(child, Column):
+          built = child.build(col_unit)
+        else:
+          built = child
+        data.append([built])
+      else:
+        data.append([item])
+
+    return Table(
+      data,
+      style=[
+        ('LEFTPADDING', (0, 0), (-1, -1), 0),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+        ('TOPPADDING', (0, 0), (-1, -1), 0),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
+      ]
+    )
+
+
 class Row:
   def __init__(self, height: float = None, padding: Padding | list[Padding] = None, h_alignment: str = None,
-               v_alignment: str = None, border: Border | list[Border] = None, children: list[Cell | column.Column] = None):
+               v_alignment: str = None, border: Border | list[Border] = None, children: list[Cell | Column] = None):
     self.height: float = height
     self.padding: Padding | list[Padding] = padding
     self.h_alignment: str = h_alignment
@@ -133,7 +168,7 @@ class Row:
       if isinstance(child, Row):
         built_child = child.build(col_unit=col_unit)
 
-      elif isinstance(child, column.Column):
+      elif isinstance(child, Column):
         built_child = child.build(col_unit=col_unit)
 
       else:
