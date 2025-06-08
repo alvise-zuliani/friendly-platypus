@@ -1,3 +1,6 @@
+from reportlab.pdfbase.pdfmetrics import stringWidth
+
+
 def int_to_roman(num):
   val = [
     1000, 900, 500, 400,
@@ -21,7 +24,8 @@ def int_to_roman(num):
   return roman
 
 # style_utils.py
-from enums import Side
+from enums import Side, HAlignment
+
 
 def decode_padding(padding, index=None):
     side_map = {
@@ -94,3 +98,11 @@ def apply_style(component, table_style, index=None):
         table_style += decode_border(bord, index)
     else:
       table_style += decode_border(component.border, index)
+
+
+def resolve_on_page_x(h_alignment: str, doc, text, font):
+  return {
+    HAlignment.LEFT: doc.leftMargin,
+    HAlignment.CENTER: doc.pagesize[0] / 2 - stringWidth(text, font.name, font.size) / 2,
+    HAlignment.RIGHT: doc.pagesize[0] - doc.rightMargin - stringWidth(text, font.name, font.size),
+  }[h_alignment]

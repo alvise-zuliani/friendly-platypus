@@ -27,8 +27,8 @@ class Width:
 
 @dataclass(frozen=True)
 class Cell:
-  width: float | Width
   child: any
+  width: float | Width = Width(12)
   padding: Padding | list[Padding] = None
   h_alignment: str = None
   v_alignment: str = None
