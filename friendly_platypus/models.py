@@ -21,13 +21,13 @@ class Padding:
 
 
 @dataclass(frozen=True)
-class WidthUnit:
+class Width:
   multiplier: int
 
 
 @dataclass(frozen=True)
 class Cell:
-  width: float | WidthUnit
+  width: float | Width
   child: any
   padding: Padding | list[Padding] = None
   h_alignment: str = None

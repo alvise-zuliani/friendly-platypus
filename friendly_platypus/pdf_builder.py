@@ -1,10 +1,7 @@
 
 
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, BaseDocTemplate, PageTemplate, Frame, PageBreak
-
-from layout_builder import Row
+from reportlab.platypus import BaseDocTemplate, PageTemplate, Frame, PageBreak
 
 
 class PdfBuilder:
@@ -37,7 +34,7 @@ class PdfBuilder:
     doc.addPageTemplates(simple_page)
     sized_body = []
     for item in self.body:
-      if isinstance(item, Row):
+      if hasattr(item, 'build') and callable(getattr(item, 'build')):
         sized_body.append(item.build(col_unit=col_unit))
       else:
         sized_body.append(item)

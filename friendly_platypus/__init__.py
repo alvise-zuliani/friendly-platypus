@@ -1,5 +1,5 @@
 
-from layout_builder import Row, Column
+from buildables import Row, Column
 from pdf_builder import PdfBuilder
 from .enums import Side, HAlignment, VAlignment
 from .models import Cell, WidthUnit, Padding, Border
